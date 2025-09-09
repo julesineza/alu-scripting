@@ -1,2 +1,10 @@
 #!/usr/bin/env ruby
-puts ARGV[0].scan((/\[from:(.*?)\].*?\[to:(.*?)\].*?\[flags:(.*?)\]/).join
+log = ARGV[0]
+
+regex = /\[from:(.*?)\].*?\[to:(.*?)\].*?\[flags:(.*?)\]/
+match = log.match(regex)
+
+if match
+  sender, receiver, flags = match.captures
+  puts "#{sender},#{receiver},#{flags}"
+end

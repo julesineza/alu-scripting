@@ -8,6 +8,15 @@ import requests
 def count_words(subreddit, word_list, after=None, word_count=None):
     """
     Recursively queries Reddit API and counts keyword occurrences
+
+    Args:
+        subreddit (str) : the subreddit to query
+        word_list : a list of words that the user provides
+        after : code of the next page for pagination
+        word_count : the words and the number of times they appear
+
+    Returns : 
+        prints a sorted count of given keywords 
     """
     if word_count is None:
         word_count = {}

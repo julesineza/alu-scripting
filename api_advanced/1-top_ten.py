@@ -4,7 +4,16 @@ import requests
 
 
 def top_ten(subreddit):
-    """Prints the titles of the first 10 hot posts for a subreddit."""
+    """
+    Prints the titles of the first 10 hot posts for a subreddit.
+
+    Args:
+        subreddit (str) : the subreddit to query 
+
+    Returns:
+        string : prints the titles of the first 10 hot posts listed for a given subreddit. 
+    
+    """
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {"User-Agent": "MyRedditApp/0.1"}
     params = {"limit": 100}
@@ -24,4 +33,3 @@ def top_ten(subreddit):
     except Exception:
         print(None)
 
-top_ten("programming")

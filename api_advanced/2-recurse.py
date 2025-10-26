@@ -7,7 +7,18 @@ if no results return none
 import requests
 
 def recurse(subreddit ,after=None, hot_list=[]):
-    """Return list of all hot post titles for a subreddit (recursively)."""
+    """Return list of all hot post titles for a subreddit (recursively).
+
+    Args:
+        subreddit (str) : the subreddit to query 
+        after : the next page code 
+        hotlist : a list of all the titles
+
+    Returns:
+        list : a list contanining titles of all hot articles for a given subreddit 
+    if no results return none 
+    
+    """
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {"User-Agent": "MyRedditApp/0.1"}
     params = {"limit": 100 , "after" : after}

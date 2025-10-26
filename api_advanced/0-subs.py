@@ -5,7 +5,15 @@ import requests
 
 
 def number_of_subscribers(subreddit):
-    """Return total subscribers for a subreddit, or 0 if invalid."""
+    """
+    Return total subscribers for a subreddit, or 0 if invalid.
+
+    Args:
+        subreddit (str) : the subreddit to query 
+
+    Returns:
+        int : the number of subscribers for the reddit , returns 0 if the subreddit is invalid     
+    """
     if subreddit is None or not isinstance(subreddit, str):
         return 0
 

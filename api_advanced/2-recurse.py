@@ -5,7 +5,31 @@ import requests
 
 
 def recurse(subreddit, hot_list=None, after=None):
-    """Return list of all hot post titles for a subreddit (recursively)."""
+    """
+    Recursively retrieve all hot post titles from a subreddit.
+
+    This function queries the Reddit API's hot posts endpoint for the given
+    subreddit. It collects post titles into a list and continues retrieving
+    additional pages of results using the `after` pagination token until no
+    more data is available.
+
+    If the subreddit is invalid, inaccessible, or an error occurs during the
+    request, the function returns None.
+
+    Args:
+        subreddit (str):
+            The name of the subreddit to query.
+        hot_list (list, optional):
+            Accumulator list used during recursion. Should not be provided
+            by the caller; default is None.
+        after (str, optional):
+            Token for pagination used internally for recursive calls.
+
+    Returns:
+        list | None:
+            A list of strings containing titles of all hot posts if
+            successful; otherwise, None.
+    """
     if hot_list is None:
         hot_list = []
 

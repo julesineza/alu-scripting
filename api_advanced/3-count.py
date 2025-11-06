@@ -1,25 +1,7 @@
 #!/usr/bin/python3
-"""
-This module defines a recursive function that queries the Reddit API to count
-how many times specified keywords appear in the titles of all hot posts from a
-given subreddit.
 
-The function fetches results page by page using the API `after` pagination
-token until all hot posts have been processed. After collecting all counts, it
-prints each keyword that appears at least once, sorted primarily by descending
-frequency and secondarily in alphabetical order.
-
-Example:
-    >>> count_words("python", ["async", "package", "requests"])
-    async: 4
-    requests: 1
-
-Functions:
-    count_words(subreddit, word_list, after=None, word_count=None):
-        Recursively count keyword occurrences in hot post titles and
-        print results in sorted order.
-"""
-
+""" recursive function that queries the Reddit API, parses the title of all 
+hot articles, and prints a sorted count of given keywords """
 import requests
 
 
@@ -60,53 +42,49 @@ def count_words(subreddit, word_list, after=None, word_count=None):
         for word in word_list:
             word_lower = word.lower()
             word_count[word_lower] = word_count.get(word_lower, 0)
-
+    
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {"User-Agent": "MyRedditApp/0.1"}
     params = {"limit": 100}
-
-    if after is not None:
+    
+    if after:
         params["after"] = after
-
-    try:
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            allow_redirects=False
-        )
-    except Exception:
-        return
-
+    
+    response = requests.get(url, headers=headers, params=params, 
+                          allow_redirects=False)
+    
     if response.status_code != 200:
         return
-
+    
     data = response.json().get("data", {})
     children = data.get("children", [])
-
+    
+    # Count words in titles
     for child in children:
-        title = child.get("data", {}).get("title", "").lower()
+        title = child["data"]["title"].lower()
         words_in_title = title.split()
-
+        
         for word in words_in_title:
-            cleaned = "".join(c for c in word if c.isalnum())
-            if cleaned in word_count:
-                word_count[cleaned] += 1
-
+            # Clean word from punctuation
+            cleaned_word = ''.join(c for c in word if c.isalnum())
+            if cleaned_word in word_count:
+                word_count[cleaned_word] += 1
+    
     next_after = data.get("after")
-
+    
     if next_after is None:
-        sorted_words = sorted(
-            [(k, v) for k, v in word_count.items() if v > 0],
-            key=lambda item: (-item[1], item[0])
-        )
-        for word, count in sorted_words:
-            print(f"{word}: {count}")
+        if word_count:
+            # Filter out words with 0 count and sort
+            sorted_words = sorted(
+                [(k, v) for k, v in word_count.items() if v > 0],
+                key=lambda x: (-x[1], x[0])  # Sort by count desc, then word asc
+            )
+            
+            for word, count in sorted_words:
+                print(f"{word}: {count}")
         return
+    
+    return count_words(subreddit, word_list, after=next_after, 
+                      word_count=word_count)
 
-    return count_words(
-        subreddit,
-        word_list,
-        after=next_after,
-        word_count=word_count
-    )
+
